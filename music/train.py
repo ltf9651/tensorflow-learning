@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+
 """
 训练神经网络，将参数（Weight）存入 HDF5 文件
 """
@@ -8,6 +9,7 @@ import tensorflow as tf
 
 from utils import *
 from network import *
+
 """
 ==== 一些术语的概念 ====
 # Batch size : 批次(样本)数目。一次迭代（Forword 运算（用于得到损失函数）以及 BackPropagation 运算（用于更新神经网络参数））所用的样本数目。Batch size 越大，所需的内存就越大
@@ -40,17 +42,12 @@ def train():
         monitor='loss',  # 监控的对象是 损失（loss）
         verbose=0,
         save_best_only=True,  # 不替换最近的数值最佳的监控对象的文件
-        mode='min'  # 取损失最小的
+        mode='min'      # 取损失最小的
     )
     callbacks_list = [checkpoint]
 
     # 用 fit 方法来训练模型
-    model.fit(
-        network_input,
-        network_output,
-        epochs=100,
-        batch_size=64,
-        callbacks=callbacks_list)
+    model.fit(network_input, network_output, epochs=100, batch_size=64, callbacks=callbacks_list)
 
 
 def prepare_sequences(notes, num_pitch):
@@ -70,7 +67,7 @@ def prepare_sequences(notes, num_pitch):
     network_output = []
 
     for i in range(0, len(notes) - sequence_length, 1):
-        sequence_in = notes[i:i + sequence_length]
+        sequence_in = notes[i: i + sequence_length]
         sequence_out = notes[i + sequence_length]
 
         network_input.append([pitch_to_int[char] for char in sequence_in])
