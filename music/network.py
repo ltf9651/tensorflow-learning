@@ -39,7 +39,7 @@ def network_model(inputs, num_pitch, weights_file=None):
     model.add(tf.keras.layers.Dense(num_pitch))
 
     # Softmax激活函数计算每个音调的比率，取最大值作为新音符
-    model.add(tf.keras.layers.Activation('Softmax'))
+    model.add(tf.keras.layers.Activation('softmax'))
 
     # Sequential model配置 ,交叉熵作为损失函数, rmsprop优化器,
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')

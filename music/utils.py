@@ -37,9 +37,9 @@ def get_notes():
             elif isinstance(element, chord.Chord):
                 # 格式为和弦，进行转换 -> 4.12.7
                 notes.append('.'.join(str(n) for n in element.normalOrder))
-            
+
     # 将数据写入data/notes文件
-    with open('data/notes', 'wb') as filepath:
+    with open('C:/Users/Administrator/Desktop/tensorflow/music/notes_data/notes', 'wb') as filepath:
         pickle.dump(notes, filepath)
 
     return notes
@@ -60,7 +60,7 @@ def create_music(prediction):
             notes = []
             for current_note in notes_in_chord:
                 new_note = note.Note(int(current_note))
-                new_note.storedInstrument = instrument.Piano() # 乐器使用钢琴
+                new_note.storedInstrument = instrument.Piano()  # 乐器使用钢琴
                 notes.append(new_note)
             new_chord = chord.Chord(notes)
             new_chord.offset = offset
