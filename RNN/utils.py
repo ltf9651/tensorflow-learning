@@ -53,7 +53,7 @@ batch_size : 批次(样本)数目。一次迭代（Forword 运算（用于得到
 """
 
 # 数据集的目录
-data_path = "C:/Users/Administrator/Desktop/tensorflow/simple-examples/data"
+data_path = "simple-examples/data"
 
 # 保存训练所得的模型参数文件的目录
 save_path = './save'
