@@ -21,13 +21,10 @@ ptb.test.txt，ptb.train.txt，ptb.valid.txt 三个数据文件
 测试，训练，验证 数据集
 这三个数据文件是已经经过预处理的，包含10000个不同的词语和语句结束标识符 <eos> 的
 
-要获得此数据集，只需要用下面一行命令：
+获得此数据集：
 wget http://www.fit.vutbr.cz/~imikolov/rnnlm/simple-examples.tgz
 
-如果没有 wget 的话，就安装一下：
-sudo apt install wget
-
-解压下载下来的压缩文件：
+解压：
 tar xvf simple-examples.tgz
 
 ==== 一些术语的概念 ====
