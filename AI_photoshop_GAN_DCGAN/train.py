@@ -61,7 +61,7 @@ def train():
             random_data = np.random.uniform(-1, 1, size=(BATCH_SIZE, 100))
 
             # 训练 生成器，并通过不可被训练的 判别器 去判别
-            g_loss = d_on_g.train_on_batch((random_data, [1] * BATCH_SIZE))
+            g_loss = d_on_g.train_on_batch(random_data, [1] * BATCH_SIZE)
 
             # 训练完生成器后回复判别器可训练
             d.trainable = True
