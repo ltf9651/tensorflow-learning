@@ -17,7 +17,7 @@ from network import *
 # 以之前训练所得的最佳参数来生成音乐
 def generate():
     # 加载用于训练神经网络的音乐数据
-    with open('C:/Users/Administrator/Desktop/tensorflow/music/data/notes',
+    with open('music/data',
               'rb') as filepath:
         notes = pickle.load(filepath)
 
@@ -34,7 +34,7 @@ def generate():
     # 记得要把它的名字改成 best-weights.hdf5 ），来生成神经网络模型
     model = network_model(
         normalized_input, num_pitch,
-        'C:/Users/Administrator/Desktop/tensorflow/music/best-weights.hdf5')
+        'music/best-weights.hdf5')
 
     # 用神经网络来生成音乐数据
     prediction = generate_notes(model, network_input, pitch_names, num_pitch)

@@ -44,13 +44,13 @@ def get_notes():
     """
     # 确保包含所有 MIDI 文件的 music_midi 文件夹在所有 Python 文件的同级目录下
     # 当然了，你也可以自定义文件夹名和路径
-    if not os.path.exists("C:/Users/Administrator/Desktop/tensorflow/music/music_midi"):
+    if not os.path.exists("music/music_midi"):
         raise Exception("包含所有 MIDI 文件的 music_midi 文件夹不在此目录下，请添加")
 
     notes = []
 
     # glob : 匹配所有符合条件的文件，并以 List 的形式返回
-    for midi_file in glob.glob("C:/Users/Administrator/Desktop/tensorflow/music/music_midi/*.mid"):
+    for midi_file in glob.glob("music/music_midi/*.mid"):
         stream = converter.parse(midi_file)
 
         """
@@ -77,10 +77,10 @@ def get_notes():
                 notes.append('.'.join(str(n) for n in element.normalOrder))
 
     # 如果 data 目录不存在，创建此目录
-    if not os.path.exists("C:/Users/Administrator/Desktop/tensorflow/music/data"):
-        os.mkdir("C:/Users/Administrator/Desktop/tensorflow/music/data")
-    # 将数据写入 C:/Users/Administrator/Desktop/tensorflow/music 目录下的 notes 文件
-    with open('C:/Users/Administrator/Desktop/tensorflow/music/data/notes', 'wb') as filepath:
+    if not os.path.exists("music/data"):
+        os.mkdir("music/data")
+    # 将数据写入 music 目录下的 notes 文件
+    with open('music/data/notes', 'wb') as filepath:
         pickle.dump(notes, filepath)
 
     return notes
