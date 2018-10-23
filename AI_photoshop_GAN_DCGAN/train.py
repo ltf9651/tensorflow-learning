@@ -71,8 +71,8 @@ def train():
 
             # Epoch 每轮训练完成后保存 生成器 和 判别器 的参数
             if epoch % 10 == 9:
-                g.save_weights("generator_weight", True)
-                d.save_weights("discriminator_weight", True)
+                g.save_weights("./generator_weight", True)
+                # d.save_weights("discriminator_weight", True)
 
 
 if __name__ == "__main__":

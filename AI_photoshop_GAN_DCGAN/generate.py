@@ -26,7 +26,7 @@ def generate():
     # 用生成的图片数据生成真正的图片(PNG)
     for i in range(BATCH_SIZE):
         image = images[i] * 127.5 + 127.5
-        Image.fromarray(image.astype(np.uint8)).save('image-%s.png' % i)
+        Image.fromarray(image.astype(np.uint8)).save('AI_photoshop_GAN_DCGAN/generate_images/image-%s.png' % i)
 
 
 if __name__ == "__main__":
