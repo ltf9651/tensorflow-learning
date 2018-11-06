@@ -36,8 +36,8 @@ class PolicyGradient:
         # 直接选择概率最大的那个 action
         self.chosen_action = tf.argmax(self.output, 1)
 
-        # 下面主要是负责训练的一些过程
-        # 我们给神经网络传递 reward 和 action，为了计算 loss
+        # 负责训练的过程
+        # 给神经网络传递 reward 和 action(为了计算 loss)
         # 再用 loss 来调节神经网络的参数
         self.reward_holder = tf.placeholder(shape=[None], dtype=tf.float32)
         self.action_holder = tf.placeholder(shape=[None], dtype=tf.int32)
