@@ -46,7 +46,7 @@ class DeepQLearning:
         e_params = tf.get_collection(
             tf.GraphKeys.GLOBAL_VARIABLES, scope='Q_eval_net')
 
-        # 用 Q_eval_net 参数来替换 Q_target_net 参数
+        # 用 Q_eval_net 参数来替换 Q_target_net 参数  e 给到 t
         with tf.variable_scope('target_replacement'):
             self.target_replace_op = [
                 tf.assign(t, e) for t, e in zip(t_params, e_params)
