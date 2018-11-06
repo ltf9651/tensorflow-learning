@@ -11,6 +11,7 @@ Deep Q Learning 例子的 Maze（迷宫） 环境
 
 import sys
 import time
+
 import numpy as np
 
 # Python2 和 Python3 中 Tkinter 的名称不一样
@@ -148,4 +149,3 @@ class Maze(tk.Tk, object):
     # 调用 Tkinter 的 update 方法
     def render(self):
         self.update()
-
