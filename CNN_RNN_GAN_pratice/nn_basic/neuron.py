@@ -124,3 +124,5 @@ with tf.Session() as sess:
                 all_test_acc.append(test_accuracy)
             test_acc = np.mean(all_test_acc)
             print('[Test ] Step: %d, acc: %4.5f' % (i, test_acc))
+
+sess.close()
