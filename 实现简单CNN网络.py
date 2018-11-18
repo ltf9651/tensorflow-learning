@@ -44,7 +44,7 @@ logits = tf.layers.dense(inputs=dropout, units=10)
 
 loss = tf.losses.softmax_cross_entropy(onehot_labels=output_y, logits=logits)
 
-train_op = tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
+train_op = tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)  #反向传播算法
 
 accuracy = tf.metrics.accuracy(
     labels=tf.argmax(output_y, axis=1),

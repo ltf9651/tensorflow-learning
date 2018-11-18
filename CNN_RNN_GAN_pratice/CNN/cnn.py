@@ -123,7 +123,7 @@ correct_prediction = tf.equal(predict, y)
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float64))
 
 with tf.name_scope('train_op'):
-    train_op = tf.train.AdamOptimizer(1e-3).minimize(loss)
+    train_op = tf.train.AdamOptimizer(1e-3).minimize(loss) #反向传播算法
 
 init = tf.global_variables_initializer()
 batch_size = 20
