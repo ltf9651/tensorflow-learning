@@ -58,8 +58,10 @@ sess.run(init)
 
 for i in range(500):
     batch = mnist.train.next_batch(50)
-        train_loss, train_op_ = sess.run([loss, train_op], {input_x: batch[0], output_y: batch[1]})
-
+    train_loss, train_op_ = sess.run([loss, train_op], {
+        input_x: batch[0],
+        output_y: batch[1]
+    })
 
     if i % 100 == 0:
         test_accuracy = sess.run(accuracy, {input_x: test_x, output_y: test_y})
