@@ -67,7 +67,8 @@ train_data = CifarData(train_filenames, need_shuffle=True)
 test_data = CifarData(test_filenames, False)
 
 
-def residual_network(x, output_channel):
+def residual_block(x, output_channel):
+    """残差连接块函数"""
     # output_channel 输出通道数
     input_channel = x.get_shape().as_list()[-1]
     if input_channel * 2 == output_channel:
@@ -75,33 +76,101 @@ def residual_network(x, output_channel):
         strides = (2, 2)
     elif input_channel == output_channel:
         increase_dim = False
-        strides = (1,1)
+        strides = (1, 1)
     else:
         exit()
 
-    conv1 = tf.layers.conv2d(x,
-                             output_channel,
-                             (3,3),
-                             strides = strides,
-                             padding = 'same',
-                             activation = tf.nn.relu,
-                             name = 'conv1')
-                            
-    conv2 = tf.layers.conv2d(conv1,
-                             output_channel,
-                             (3, 3),
-                             strides = (1, 1),
-                             padding = 'same',
-                             activation = tf.nn.relu,
-                             name = 'conv2')
+    conv1 = tf.layers.conv2d(
+        x,
+        output_channel, (3, 3),
+        strides=strides,
+        padding='same',
+        activation=tf.nn.relu,
+        name='conv1')
+
+    conv2 = tf.layers.conv2d(
+        conv1,
+        output_channel, (3, 3),
+        strides=(1, 1),
+        padding='same',
+        activation=tf.nn.relu,
+        name='conv2')
+
+    if increase_dim:
+        # pooled_x:[None, image_width, image_height, channel] -> padded_x:[,,,channel*2]
+        pooled_x = tf.layers.average_pooling2d(
+            x, (2, 2), (2, 2), padding="valid")  # 降采样，图像大小变为原来一半
+
+        padded_x = tf.pad(
+            pooled_x,
+            [[0, 0], [0, 0], [0, 0], [input_channel // 2, input_channel // 2]])
+    else:
+        padded_x = x
+
+    output_x = conv2 + padded_x
+    return output_x
 
 
-x = tf.placeholder(tf.float32, [None, 3072])  # 32 * 32 * 3 = 3072
-x_image = tf.reshape(x, [-1, 3, 32, 32])  # 图片格式 shape = 32 * 32
-x_image = tf.transpose(
-    x_image, perm=[0, 2, 3, 1])  # 切换通道 0->-1   1->3   2,3->32,32
+def res_net(x, num_residual_blocks, num_filter_base, class_num):
+    """
+    Args:
+    - x:
+    - num_residual_blocks: eg: [3, 4, 6, 3] 残差连接块个数
+    - num_subsampling: 降采样次数
+    - num_filter_base: 原始通道数
+    - class_num: 
+    """
+    num_subsampling = len(num_residual_blocks)
 
-y_ = tf.layers.dense(flatten, 10)
+    layers = []
+    input_size = x.get_shape().as_list()[
+        1:]  # x: [None, width, height, channel] -> [width, height, channel]
+    with tf.variable_scope('conv0'):
+        conv0 = tf.layers.conv2d(
+            x,
+            num_filter_base,  # filters 输出空间的维数
+            (3, 3),
+            strides=(1, 1),
+            padding='same',
+            activation=tf.nn.relu,
+            name='conv0')
+        layers.append(conv0)
+
+    # 不执行 pooling
+
+    # eg:num_subsampling = 4, sample_id = [0,1,2,3]
+    for sample_id in range(num_subsampling):
+        for i in range(num_residual_blocks[sample_id]):
+            with tf.variable_scope("conv%d_%d" % (sample_id, i)):
+                conv = residual_block(
+                    layers[-1], num_filter_base * (2**sample_id))  # 输入残差连接得到输出
+                layers.append(conv)
+
+    multiplier = 2**(num_subsampling - 1)
+    assert layers[-1].get_shape().as_list()[1:] == [
+        input_size[0] / multiplier, input_size[1] / multiplier,
+        num_filter_base * multiplier
+    ]
+
+    # average pooling
+    with tf.variable_scope('fc'):
+        # layer[-1].shape : [None, width, height, channel]
+        # kernal_size: image_width, image_height
+        global_pool = tf.reduce_mean(layers[-1], [1, 2])  # 1,2纬度上(w,h)做Pooling
+        logits = tf.layers.dense(global_pool, class_num)  # 全连接
+        layers.append(logits)
+
+    return layers[-1]
+
+
+x = tf.placeholder(tf.float32, [None, 3072])
+y = tf.placeholder(tf.int64, [None])
+# [None], eg: [0,5,6,3]
+x_image = tf.reshape(x, [-1, 3, 32, 32])
+# 32*32
+x_image = tf.transpose(x_image, perm=[0, 2, 3, 1])
+
+y_ = res_net(x_image, [2, 3, 2], 32, 10)
 
 loss = tf.losses.sparse_softmax_cross_entropy(
     labels=y, logits=y_)  # y 图片真实类别值， y_图片经过计算得到的内积值
